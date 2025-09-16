@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>報價單輸入表單</title>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFJOygGzxtNB9oA3IBeIWySkm9sQCeeQQR4aFFVIyQ0DuiGoL1KvzLawaroldWXQYQTA/exec';
+
+    async function submitForm(event) {
+      event.preventDefault(); // 防止表單預設送出行為
+
+      const data = {
+        formType: '報價單',
+        客戶代碼: document.getElementById('customerCode').value,
+        產品項目: document.getElementById('product').value,
+        數量: document.getElementById('quantity').value,
+        單價: document.getElementById('price').value,
+        金額: document.getElementById('amount').value,
+        備註: document.getElementById('note').value
+      };
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert('送出成功 ✅');
+        document.getElementById('form').reset();
+      } catch (error) {
+        console.error('送出失敗 ❌', error);
+        alert('送出失敗，請稍後再試');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h2>報價單輸入表單</h2>
+  <form id="form" onsubmit="submitForm(event)">
+    <label>客戶代碼：<input type="text" id="customerCode" required /></label><br />
+    <label>產品項目：<input type="text" id="product" required /></label><br />
+    <label>數量：<input type="number" id="quantity" required /></label><br />
+    <label>單價：<input type="number" id="price" required /></label><br />
+    <label>金額：<input type="number" id="amount" required /></label><br />
+    <label>備註：<input type="text" id="note" /></label><br />
+    <button type="submit">送出</button>
+  </form>
+</body>
+</html>
